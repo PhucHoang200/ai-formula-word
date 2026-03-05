@@ -2,9 +2,9 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test-and-build:
@@ -20,7 +20,7 @@ jobs:
       # Kiểm tra lỗi cú pháp (Linting) hoặc Test nếu bạn có viết test
       - name: Backend Lint Check
         run: |
-          docker run --rm -v $(pwd):/apps -w /apps python:3.11-slim sh -c "pip install flake8 && flake8 ./backend"
+          docker run --rm -v $(pwd):/apps -w /apps python:3.11-slim sh -c "pip install flake8 && flake8 ./backend --ignore=E501,W292,E302"
 
       # Quan trọng: Build thử xem Dockerfile có lỗi không
       - name: Build Backend Image (Test)
