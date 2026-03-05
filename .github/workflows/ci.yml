@@ -1,0 +1,38 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Kiểm tra lỗi cú pháp hoặc test
+      - name: Backend Lint Check
+        run: |
+          docker run --rm python:3.11-slim pip install flake8 && flake8 ./backend
+
+      # Quan trọng: Build thử xem Dockerfile có lỗi không
+      - name: Build Backend Image (Test)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/backend.Dockerfile
+          push: false 
+
+      - name: Build Frontend Image (Test)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/frontend.Dockerfile
+          push: false
